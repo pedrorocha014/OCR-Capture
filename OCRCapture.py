@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[36]:
+# In[1]:
 
 
 import pyautogui
@@ -15,11 +15,11 @@ from tkinter import ttk
 from tkinter import filedialog
 
 
-# In[64]:
+# In[2]:
 
 
 def getText():
-    focusBase = 100
+    focusBase = screenSizeConfig.get()
     
     x_position = pyautogui.position().x - (focusBase/2)
     y_position = pyautogui.position().y - (focusBase/2)
@@ -66,28 +66,45 @@ def exportToCsv():
         f.close()
 
 
-# In[65]:
+# In[40]:
 
 
 root = Tk()
+root.title('OCR Capture')
 frm = ttk.Frame(root, padding=10)
-frm.grid()
+tabControl = ttk.Notebook(root)
+  
+tab1 = ttk.Frame(tabControl)
+tab2 = ttk.Frame(tabControl)
+  
+tabControl.add(tab1, text ='Capture')
+tabControl.add(tab2, text ='Configuration')
+tabControl.pack(expand = 1, fill ="both")
+
+#TAB 1
 
 choices = ['Tag', 'Valve', 'Line']
 
-Label(frm, text="Text Value").grid(column=0, row=0)
-textEntry = ttk.Entry(frm)
-textEntry.grid(column=1, row=0,pady=10)
+Label(tab1, text="Text Value").grid(column=0, row=0, sticky='W')
+textEntry = ttk.Entry(tab1)
+textEntry.grid(column=1, row=0,pady=10, sticky='ew')
 
-Label(frm, text="Category").grid(column=0, row=1)
-categoryEntry = ttk.Combobox(frm, values = choices)
-categoryEntry.grid(column=1, row=1, pady=10)
+Label(tab1, text="Category").grid(column=0, row=1, sticky='W')
+categoryEntry = ttk.Combobox(tab1, values = choices)
+categoryEntry.grid(column=1, row=1, pady=10, sticky='ew')
 
-ttk.Button(frm, text="Save", command=saveText).grid(column=0, row=2)
-ttk.Button(frm, text="Export", command=exportToCsv).grid(column=1, row=2, pady=10)
+ttk.Button(tab1, text="Save", command=saveText).grid(column=0, row=2, sticky='ew')
+ttk.Button(tab1, text="Export", command=exportToCsv).grid(column=1, row=2, pady=10, sticky='ew')
 
-textListbox = Listbox(frm)
-textListbox.grid(column=0, row=3, columnspan=2)
+textListbox = Listbox(tab1)
+textListbox.grid(column=0, row=3, columnspan=2, sticky='ew')
+
+#TAB 2
+
+Label(tab2, text="Capture Range").grid(column=0, row=0)
+
+screenSizeConfig = Scale(tab2, from_=100, to=600, orient=HORIZONTAL)
+screenSizeConfig.grid(row=1, columnspan=2, sticky='ew')
 
 root.bind('<KeyPress>', getKeyDown)
 root.mainloop()
